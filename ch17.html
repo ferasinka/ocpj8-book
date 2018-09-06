@@ -116,7 +116,7 @@
 	  LongStream <span class="hljs-title">flatMapToLong</span><span class="hljs-params">(Function&lt;? <span class="hljs-keyword">super</span> T,<br />
 	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;? extends LongStream&gt; mapper)</span></span></code></p>
 
-            <p>From its signature (and their primitive versions' signature) we can see that in contrast to <code>map()</code> (that returns a single value), <code>flatMap()</code> must return a <code>Stream</code>. If <code>flatMap()</code> returns <code>null</code>, an empty stream is returned instead.</p>
+            <p>If the <code>Function</code> used by <code>flatMap()</code> returns <code>null</code>, an empty stream is returned instead.</p>
 
             <p>Let's see how this work. If we have a stream of lists of characters:</p>
 
@@ -124,13 +124,7 @@
 	  List&lt;Character&gt; eToG = Arrays.asList(<span class="hljs-string">'e'</span>, <span class="hljs-string">'f'</span>, <span class="hljs-string">'g'</span>);<br />
 	  Stream&lt;List&lt;Character&gt;&gt; stream = Stream.of(aToD, eToG);</code></p>
 
-            <p>And we want to convert all the characters to their <code>int</code> representation, we can't use <code>map()</code> anymore:</p>
-
-            <p><code class="java hljs">stream .map(c -&gt; (<span class="hljs-keyword">int</span>)c)</code></p>
-
-            <p>Because (as each element of the stream is passed to map) <code>c</code> represents an object of type <code>List&lt;Character&gt;</code>, not <code>Character</code>.</p>
-
-            <p>What we need to do is to get the elements of the lists into one stream and then convert each character to an <code>int</code>. Fortunately, the "combining" part is exactly what <code>flatMap()</code> does:</p>
+            <p>And we want to convert all the characters to their <code>int</code> representation, what we need to do is to get the elements of the lists into one stream and then convert each character to an <code>int</code>. Fortunately, the "combining" part is exactly what <code>flatMap()</code> does:</p>
 
             <p><code class="java hljs">stream<br />
 	  &nbsp; &nbsp; .flatMap(l -&gt; l.stream())<br />
@@ -141,19 +135,23 @@
 
             <p><code class="java hljs">97 98 99 100 101 102 103</code></p>
 
-            <p>Using <code>peek()</code> after <code>flatMap()</code> may clarify how the elements are processed:</p>
+            <p>This way, with <code>flatMap()</code> you can convert a <code>Stream&lt;List&lt;T&gt;&gt;</code> to <code>Stream&lt;T&gt;</code>.</p>
 
-            <p><code class="java hljs">stream<br />
-	  &nbsp; &nbsp; .flatMap(l -&gt; l.stream())<br />
-	  &nbsp; &nbsp; .peek(System.out::print)<br />
-	  &nbsp; &nbsp; .map(c -&gt; (<span class="hljs-keyword">int</span>)c)<br />
-	  &nbsp; &nbsp; .forEach(i -&gt; System.out.format(<span class="hljs-string">"%d "</span>, i));</code></p>
+  <p>Using <code>peek()</code> after <code>flatMap()</code> may clarify how the elements are processed:</p>
 
-            <p>As you can see from the output, the stream returned from <code>flatMap()</code> is passed through the pipeline, as if we were working with a stream of single elements and not with a stream of lists of elements:</p>
+  <p><code class="java hljs">stream<br/>
+  &nbsp; &nbsp; .flatMap(l -&gt; l.stream())<br/>
+  &nbsp; &nbsp; .peek(System.out::print)<br/>
+  &nbsp; &nbsp; .map(c -&gt; (<span class="hljs-keyword">int</span>)c)<br/>
+  &nbsp; &nbsp; .forEach(i -&gt; System.out.format(<span class="hljs-string">"%d "</span>, i));</code></p>
 
-            <p><code class="java hljs">a97 b98 c99 d100 e101 f102 g103</code></p>
+  <p>As you can see from the output, the stream returned from <code>flatMap()</code> is passed through the pipeline, as if we were working with a stream of single elements and not with a stream of lists of elements:</p>
 
-            <p>This way, with <code>flatMap()</code> you can convert a <code>Stream&lt;List&lt;Object&gt;&gt;</code> to <code>Stream&lt;Object&gt;</code>. However, the important concept is that this method returns a stream and not a single element (as <code>map()</code> does).</p>
+  <p><code class="java hljs">a97 b98 c99 d100 e101 f102 g103</code></p>
+
+<p>In both cases, <code>map()</code>&nbsp;and&nbsp;<code>flatMap()</code> return a stream. <code>map()</code> returns <code>Stream&lt;Integer&gt;</code> and <code>flatMap()</code> returns <code>Stream&lt;Character&gt;</code>.</p>
+
+<p>In both cases, <code>map()</code>&nbsp;and&nbsp;<code>flatMap()</code> take a <code>Function</code> as its argument, but each <code>Function</code> has different parameters. <code>Function&lt;Character, Integer&gt;</code> and <code>Function&lt;List&lt;Character&gt;, Stream&lt;? extends Character&gt;&gt;</code>, respectively.</p>
 
             <h2>Reduction</h2>
 
@@ -873,7 +871,10 @@
 
                 <li><code>map()</code> is used to transform the value or the type of the elements of a stream through a provided <code>Function</code>.</li>
 
-                <li><code>flatMap()</code> is used to "flatten" (or combine) the elements of a stream into one (new) stream. In contrast to <code>map()</code> (that returns a single value), <code>flatMap()</code> must return a <code>Stream</code>.</li>
+                <li><code>flatMap()</code> is used to "flatten" or combine the contents of a stream into
+                    another (new) stream. In contrast to <code>map()</code>, <code>flatMap()</code> takes a <code>Function</code> on a <code>Stream</code>
+                    object, per se; whereas  <code>map()</code> takes a <code>Function</code> on the objects within its
+                    stream. Both <code>map()</code> and <code>flatMap()</code>return some kind of <code>Stream</code>.</li>
 
                 <li>A reduction is an operation that takes many elements and combines them (o reduce them) into a single value or object.</li>
 
@@ -962,12 +963,12 @@
 
             <p><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Question_17_7</span></span> {<br />
 	  <span class="hljs-function"><span class="hljs-keyword">&nbsp; &nbsp; public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span> {<br />
-	  &nbsp; &nbsp; &nbsp; &nbsp; Map&lt;Integer, Map&lt;String, List&lt;Integer&gt;&gt;&gt; map =<br />
+	  &nbsp; &nbsp; &nbsp; &nbsp; Map&lt;Integer, Map&lt;Boolean, List&lt;Integer&gt;&gt;&gt; map =<br />
 	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Stream.of(<span class="hljs-number">56</span>, <span class="hljs-number">54</span>, <span class="hljs-number">1</span>, <span class="hljs-number">31</span>, <span class="hljs-number">98</span>, <span class="hljs-number">98</span>, <span class="hljs-number">16</span>)<br />
 	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.collect(groupingBy(<br />
-	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;i -&gt; i%<span class="hljs-number">10</span>,<br />
+	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Integer i) -&gt; i%<span class="hljs-number">10</span>,<br />
 	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;TreeMap::<span class="hljs-keyword">new</span>,<br />
-	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;partitioningBy(i -&gt; i &gt; <span class="hljs-number">5</span>)<br />
+	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;partitioningBy((Integer i) -&gt; i &gt; <span class="hljs-number">5</span>)<br />
 	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )<br />
 	  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;);<br />
 	  &nbsp; &nbsp; &nbsp; &nbsp; System.out.println(map);<br />

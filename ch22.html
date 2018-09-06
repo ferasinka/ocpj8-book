@@ -220,14 +220,14 @@
 
             <p>From a <code>ZonedDateTime</code> you can get <code>LocalDate</code>, <code>LocalTime</code>, or a <code>LocalDateTime</code> (without the time zone part) with:</p>
 
-            <p><code class="java hljs">LocalDateTime currentDate = now.toLocalDate();<br />
-	  LocalDateTime currentTime = now.toLocalTime();<br />
+            <p><code class="java hljs">LocalDate currentDate = now.toLocalDate();<br />
+                LocalTime currentTime = now.toLocalTime();<br />
 	  LocalDateTime currentDateTime = now.toLocalDateTime();</code></p>
 
             <p><code>ZonedDateTime</code> also have most of the methods of <code>LocalDateTime</code> that we reviewed in the previous chapter:</p>
 
             <p><code class="java hljs"><span class="hljs-comment">//To get the value of a specified field</span><br />
-	  <span class="hljs-keyword">int</span> day = now.getDayofMonth();<br />
+	  <span class="hljs-keyword">int</span> day = now.getDayOfMonth();<br />
 	  <span class="hljs-keyword">int</span> dayYear = now.getDayOfYear();<br />
 	  <span class="hljs-keyword">int</span> nanos = now.getNano();<br />
 	  Month monthEnum = now.getMonth();<br />
@@ -242,7 +242,7 @@
 	  <span class="hljs-comment">// Returns a copy of this date/time with a different time zone,<font color="#000000"><br /></font></span><span class="hljs-comment">// retaining the local date/time if it's valid for the new time zone<br /></span>ZonedDateTime zdt5 = now.withZoneSameLocal(australiaZone);<br />
 	  <span class="hljs-comment"><font color="#000000"><br /></font>// Adding<br /></span>ZonedDateTime zdt6 = now.plusDays(<span class="hljs-number">4</span>);<br />
 	  ZonedDateTime zdt7 = now.plusWeeks(<span class="hljs-number">3</span>);<br />
-	  ZonedDateTime zdt8 = newYear2001.plus(<span class="hljs-number">2</span>, ChronoUnit.HOURS);<br />
+	  ZonedDateTime zdt8 = now.plus(<span class="hljs-number">2</span>, ChronoUnit.HOURS);<br />
 	  <span class="hljs-comment"><font color="#000000"><br /></font>// Subtracting<br /></span>ZonedDateTime zdt9 = now.minusMinutes(<span class="hljs-number">20</span>);<br />
 	  ZonedDateTime zdt10 = now.minusNanos(<span class="hljs-number">99999</span>);<br />
 	  ZonedDateTime zdt11 = now.minus(<span class="hljs-number">10</span>, ChronoUnit.SECONDS);</code></p>
@@ -425,7 +425,7 @@
                         </div>
 
                         <div style="text-align: center;">
-                            <code>ISO_LOCAL_DATETIME</code>
+                            <code>ISO_LOCAL_DATE_TIME</code>
                         </div>
                     </td>
 
@@ -457,7 +457,7 @@
                         </div>
 
                         <div style="text-align: center;">
-                            <code>ISO_OFFSET_DATETIME</code>
+                            <code>ISO_OFFSET_DATE_TIME</code>
                         </div>
                     </td>
 
@@ -497,7 +497,7 @@
                         </div>
 
                         <div style="text-align: center;">
-                            <code>ISO_DATETIME</code>
+                            <code>ISO_DATE_TIME</code>
                         </div>
                     </td>
 

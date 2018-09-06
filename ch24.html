@@ -80,7 +80,7 @@
 
             <p>Since <code>Path</code> is an interface and Java handles its implementations, we have to use a utility class to create <code>Path</code> instances.</p>
 
-            <p><code>java.nio.files.Paths</code> is this class. It provides two methods to create a <code>Path</code> object:</p>
+            <p><code>java.nio.file.Paths</code> is this class. It provides two methods to create a <code>Path</code> object:</p>
 
             <p><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">static</span> Path <span class="hljs-title">get</span><span class="hljs-params">(String first, String... more)</span><br />
   <span class="hljs-keyword">static</span> Path <span class="hljs-title">get</span><span class="hljs-params">(URI uri)</span></span></code></p>
@@ -416,7 +416,7 @@
             <p>This method returns <code>true</code> if the file was deleted or false if the file could not be removed because it did not exist, in other words, unlike the first method, this doesn't throw a <code>NoSuchFileException</code> (but it still throws a <code>DirectoryNotEmptyException</code> and an <code>IOException</code> for other problems):</p>
 
             <p><code class="java hljs"><span class="hljs-keyword">try</span> {<br />
-  &nbsp; &nbsp; Files.delete(Paths.get(<span class="hljs-string">"/temp/dir1/file.txt"</span>));<br />
+  &nbsp; &nbsp; Files.deleteIfExists(Paths.get(<span class="hljs-string">"/temp/dir1/file.txt"</span>));<br />
   } <span class="hljs-keyword">catch</span> (DirectoryNotEmptyException dnee) {<br />
   <span class="hljs-comment">&nbsp; &nbsp; // To delete a directory, it must be empty,</span><br />
   } <span class="hljs-keyword">catch</span> (IOException ioe) {<br />
@@ -652,7 +652,7 @@
 
                 <li>The <code>Path</code> interface defines an object that represents the path to a file or a directory.</li>
 
-                <li><code>java.nio.files.Paths</code> provides methods to create a <code>Path</code> object.</li>
+                <li><code>java.nio.file.Paths</code> provides methods to create a <code>Path</code> object.</li>
 
                 <li>The absolute path representation of a <code>Path</code> object has a root component (either <code>c:\</code> or <code>/</code>) and a sequence of names separated by a (forward or backward) slash.</li>
 
